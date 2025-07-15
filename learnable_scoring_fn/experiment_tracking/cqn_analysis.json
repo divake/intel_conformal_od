@@ -1,0 +1,22 @@
+{
+  "experiment": "Conditional Quantile Networks",
+  "status": "PARTIAL_SUCCESS",
+  "best_metrics": {
+    "coverage": 0.763,
+    "mpiw": 24.6,
+    "width_std": 11.83,
+    "epoch": 4
+  },
+  "achievements": [
+    "Solved coordinate imbalance",
+    "Achieved size adaptivity",
+    "No collapse",
+    "76.3% coverage (vs 0% baseline)"
+  ],
+  "limitations": [
+    "Coverage below 88% target",
+    "Early plateau at epoch 4"
+  ],
+  "decision": "MOVE_TO_ADVERSARIAL_TRAINING",
+  "timestamp": "2025-06-13T05:01:48.298644"
+}

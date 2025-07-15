@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-06-13T07:59:54.979952",
+  "model_info": {
+    "checkpoint": "learnable_scoring_fn/experiment_tracking/checkpoints/cqn_best.pt",
+    "original_coverage": 0.7594997594997595
+  },
+  "summary": {
+    "temperatures": {
+      "mean": 1.667769724143227,
+      "std": 0.017001660606950127,
+      "min": 1.6417343657984609,
+      "max": 1.688561052204922,
+      "range": 0.04682668640646104,
+      "cv": 0.010194249458320323
+    },
+    "test_coverage": {
+      "mean": 0.8984368737474948,
+      "std": 0.004022738491398707,
+      "min": 0.8924248496993988,
+      "max": 0.9033266533066132,
+      "range": 0.010901803607214378
+    },
+    "mpiw": {
+      "mean": 41.12165069580078,
+      "std": 0.3401392102241516
+    }
+  },
+  "detailed_results": [
+    {
+      "seed": 42,
+      "calibration": {
+        "temperature": 1.6811463929021555,
+        "cal_coverage": 0.8998717332050665
+      },
+      "test_results": {
+        "coverage": 0.9017234468937876,
+        "mpiw": 

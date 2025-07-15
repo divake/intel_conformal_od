@@ -1,0 +1,6 @@
+{
+  "experiment": "Coverage Dropout",
+  "epoch": 4,
+  "coverage": 0.0,
+  "mpiw": 4.795779228210449,
+  "width_std": 

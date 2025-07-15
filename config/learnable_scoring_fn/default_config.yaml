@@ -1,0 +1,125 @@
+# Configuration file for Learnable Scoring Function Training
+# This file contains all configurable parameters for training the regression-based scoring function
+
+# Data Configuration
+DATA:
+  # Maximum number of images to use from each dataset (set to -1 for all images)
+  MAX_TRAIN_IMAGES: -1  # Limit COCO train images for faster iteration
+  MAX_VAL_IMAGES: -1      # Use all COCO val images
+  
+  # Data split fractions
+  CALIB_FRACTION: 0.5     # Fraction of val data used for calibration (rest for test)
+  
+  # Cache directory for storing predictions
+  CACHE_DIR: "learnable_scoring_fn/experiments/cache"
+  
+  # Prediction collection settings
+  USE_EXISTING_PREDICTIONS: true  # Use existing predictions if available
+  LIMIT_DATASET_SIZE: true        # Whether to limit dataset size
+
+# Model Architecture
+MODEL:
+  # Hidden layer dimensions for the neural network
+  HIDDEN_DIMS: [256, 128, 64]
+  
+  # Dropout rate for regularization
+  DROPOUT_RATE: 0.15
+  
+  # Feature dimensions (automatically determined, but can be overridden)
+  INPUT_DIM: null  # Set to null for automatic detection
+
+# Training Parameters
+TRAINING:
+  # Number of training epochs
+  NUM_EPOCHS: 100
+  
+  # Batch size for training
+  BATCH_SIZE: 128
+  
+  # Learning rate
+  LEARNING_RATE: 0.001
+  
+  # Weight decay for regularization
+  WEIGHT_DECAY: 0.0001
+  
+  # Gradient clipping norm
+  GRAD_CLIP_NORM: 1.0
+  
+  # Early stopping patience (epochs)
+  EARLY_STOPPING_PATIENCE: 20
+  
+  # Random seed for reproducibility
+  SEED: 42
+  
+  # Device configuration
+  DEVICE: "cuda"  # "cuda" or "cpu"
+
+# Loss Function Configuration
+LOSS:
+  # Target coverage level (further increased to achieve 90%+ actual coverage)
+  TARGET_COVERAGE: 0.95
+  
+  # Weight for efficiency loss (reduced to prioritize coverage)
+  EFFICIENCY_WEIGHT: 0.01
+  
+  # Weight for calibration loss (significantly increased for better coverage)
+  CALIBRATION_WEIGHT: 0.8
+  
+  # Fixed tau value for coverage calculation
+  FIXED_TAU: 1.0
+
+# Output Configuration
+OUTPUT:
+  # Base output directory
+  BASE_DIR: "learnable_scoring_fn/experiments"
+  
+  # Experiment name (subdirectory under BASE_DIR)
+  EXPERIMENT_NAME: "real_data_v1"
+  
+  # Save frequency for checkpoints (epochs)
+  CHECKPOINT_FREQ: 10
+  
+  # Whether to save plots
+  SAVE_PLOTS: true
+
+# Conformal Prediction Configuration
+CONFORMAL:
+  # Base config file for model predictions
+  CONFIG_FILE: "cfg_std_rank"
+  
+  # Config path for model predictions
+  CONFIG_PATH: "config/coco_val/"
+  
+  # Box correction method for calibration
+  BOX_CORRECTION: "rank_coord"
+  
+  # Box set strategy
+  BOX_SET_STRATEGY: "max"
+  
+  # Number of calibration trials
+  CALIBRATION_TRIALS: 100
+
+# Logging Configuration
+LOGGING:
+  # Logging level
+  LEVEL: "INFO"
+  
+  # Log frequency (epochs)
+  LOG_FREQ: 10
+  
+  # Whether to log to file
+  LOG_TO_FILE: true
+  
+  # Verbose logging
+  VERBOSE: false
+
+# Evaluation Configuration  
+EVALUATION:
+  # Evaluation frequency (epochs)
+  EVAL_FREQ: 1
+  
+  # Metrics to compute
+  METRICS: ["coverage", "efficiency", "calibration", "correlation"]
+  
+  # Whether to evaluate on training set
+  EVAL_ON_TRAIN: false

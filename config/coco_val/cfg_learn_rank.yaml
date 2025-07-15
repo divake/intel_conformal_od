@@ -1,0 +1,97 @@
+CALIBRATION:
+  BOX_CORRECTION: none
+  BOX_SET_STRATEGY: max
+  FRACTION: 0.5
+  TRIALS: 100
+DATALOADER:
+  TEST:
+    BATCH_SIZE: 1
+    COLLATE_FN: null
+    NUM_WORKERS: 0
+  TRAIN:
+    ASPECT_RATIO_GROUPING: true
+    COLLATE_FN: null
+    NUM_WORKERS: 0
+    TOTAL_BATCH_SIZE: 16
+DATASETS:
+  DATASET:
+    ANN_FILE: coco/annotations/instances_val2017.json
+    CHANNELS: BGR
+    FILTER_EMPTY: true
+    FORMAT: coco
+    IMG_DIR: coco/val2017
+    METADATA_FILE: null
+    NAME: coco_val
+  DIR: /ssd_4TB/divake/conformal-od/data
+MODEL:
+  AP_EVAL: false
+  BOX_MATCHING: box
+  CHECKPOINT_PATH: null
+  CLASS_MATCHING: false
+  CONFIG:
+    DATALOADER:
+      ASPECT_RATIO_GROUPING: true
+      NUM_WORKERS: 0
+    INPUT:
+      CROP:
+        ENABLED: false
+        SIZE:
+        - 0.9
+        - 0.9
+        TYPE: relative_range
+      FORMAT: BGR
+      MASK_FORMAT: polygon
+      MAX_SIZE_TEST: 1333
+      MAX_SIZE_TRAIN: 1333
+      MIN_SIZE_TEST: 800
+      MIN_SIZE_TRAIN:
+      - 640
+      - 672
+      - 704
+      - 736
+      - 768
+      - 800
+      MIN_SIZE_TRAIN_SAMPLING: choice
+      RANDOM_FLIP: horizontal
+    MODEL:
+      DEVICE: cuda
+      ROI_HEADS:
+        NAME: StandardROIHeads
+        NMS_THRESH_TEST: 0.6
+        NUM_CLASSES: 80
+        SCORE_THRESH_TEST: 0.5
+    OUTPUT_DIR: /ssd_4TB/divake/conformal-od/output
+    SEED: 6666666
+    SOLVER:
+      BASE_LR: 0.02
+      CHECKPOINT_PERIOD: 500
+      IMS_PER_BATCH: 16
+      MAX_ITER: 5000
+  DEVICE: cuda
+  FILE: /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml
+  ID: x101fpn
+  IOU_THRESH_TEST: 0.5
+  LOCAL_CHECKPOINT: false
+  NAME: Faster R-CNN X101-FPN
+# Learnable Scoring Function Configuration
+LEARNABLE_SCORING:
+  ENABLED: true
+  MODEL_PATH: learnable_scoring_fn/experiments/real_data_v1/best_model.pt
+  TRAIN_CONFIG:
+    NUM_EPOCHS: 100
+    BATCH_SIZE: 128
+    LEARNING_RATE: 0.001
+    HIDDEN_DIMS: [256, 128, 64]
+    DROPOUT_RATE: 0.15
+    TARGET_COVERAGE: 0.9
+    EFFICIENCY_WEIGHT: 0.05
+    CALIBRATION_WEIGHT: 0.1
+    EARLY_STOPPING_PATIENCE: 20
+PROJECT:
+  CHECKPOINT_DIR: checkpoints
+  CODE_DIR: conformalbb
+  CONFIG_DIR: conformalbb/config
+  OUTPUT_DIR: /ssd_4TB/divake/conformal-od/output
+  PLOT_DIR: plots
+  RESULTS_DIR: results
+  SEED: 6666666

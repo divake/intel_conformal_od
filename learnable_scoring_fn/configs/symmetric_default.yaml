@@ -1,0 +1,29 @@
+# Default configuration for symmetric adaptive conformal prediction
+
+# Training parameters
+learning_rate: 0.001
+epochs: 100
+batch_size: 256
+early_stopping_patience: 15
+
+# Model architecture
+hidden_dims: [128, 128]
+dropout_rate: 0.1
+activation: relu
+use_batch_norm: true
+
+# Loss function
+target_coverage: 0.89  # Target middle of 88-90.5% range
+lambda_efficiency: 0.3  # Further increased to minimize MPIW
+coverage_loss_type: smooth_l1
+size_normalization: true
+
+# Calibration
+tau_smoothing: 0.7
+
+# Optimization
+lr_scheduler: cosine
+min_lr: 0.000001
+weight_decay: 0.0001
+grad_clip_norm: 1.0
+warmup_epochs: 5

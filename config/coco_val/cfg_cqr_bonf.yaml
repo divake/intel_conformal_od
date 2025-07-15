@@ -1,0 +1,92 @@
+CALIBRATION:
+  BOX_CORRECTION: bonferroni
+  BOX_SET_STRATEGY: max
+  FRACTION: 0.5
+  TRIALS: 100
+DATALOADER:
+  TEST:
+    BATCH_SIZE: 1
+    COLLATE_FN: null
+    NUM_WORKERS: 0
+  TRAIN:
+    ASPECT_RATIO_GROUPING: true
+    COLLATE_FN: null
+    NUM_WORKERS: 0
+    TOTAL_BATCH_SIZE: 16
+DATASETS:
+  DATASET:
+    ANN_FILE: coco/annotations/instances_val2017.json
+    CHANNELS: BGR
+    FILTER_EMPTY: true
+    FORMAT: coco
+    IMG_DIR: coco/val2017
+    METADATA_FILE: null
+    NAME: coco_val
+  DIR: /ssd_4TB/divake/conformal-od/data
+MODEL:
+  AP_EVAL: true
+  BOX_MATCHING: box
+  CHECKPOINT_PATH: checkpoints/x101fpn_train_qr_5k_postprocess/model_0002999.pth
+  CLASS_MATCHING: false
+  CONFIG:
+    DATALOADER:
+      ASPECT_RATIO_GROUPING: true
+      NUM_WORKERS: 0
+    INPUT:
+      CROP:
+        ENABLED: false
+        SIZE:
+        - 0.9
+        - 0.9
+        TYPE: relative_range
+      FORMAT: BGR
+      MASK_FORMAT: polygon
+      MAX_SIZE_TEST: 1333
+      MAX_SIZE_TRAIN: 1333
+      MIN_SIZE_TEST: 800
+      MIN_SIZE_TRAIN:
+      - 640
+      - 672
+      - 704
+      - 736
+      - 768
+      - 800
+      MIN_SIZE_TRAIN_SAMPLING: choice
+      RANDOM_FLIP: horizontal
+    MODEL:
+      DEVICE: cpu
+      ROI_HEADS:
+        NAME: QuantileROIHead
+        NMS_THRESH_TEST: 0.6
+        NUM_CLASSES: 80
+        SCORE_THRESH_TEST: 0.5
+    OUTPUT_DIR: ../../../../media/atimans/hdd/output
+    SEED: 6666666
+    SOLVER:
+      BASE_LR: 0.02
+      CHECKPOINT_PERIOD: 500
+      IMS_PER_BATCH: 16
+      MAX_ITER: 5000
+  DEVICE: cpu
+  FILE: /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml
+  ID: x101fpn
+  IOU_THRESH_TEST: 0.5
+  LOCAL_CHECKPOINT: true
+  NAME: Faster R-CNN X101-FPN
+PROJECT:
+  CHECKPOINT_DIR: checkpoints
+  CODE_DIR: conformalbb
+  CONFIG_DIR: conformalbb/config
+  OUTPUT_DIR: /ssd_4TB/divake/conformal-od/output
+  PLOT_DIR: plots
+  RESULTS_DIR: results
+  SEED: 6666666
+QUANTILE_REGRESSION:
+  FREEZE_PARAMS: all
+  QUANTILES:
+  - 0.05
+  - 0.5
+  - 0.95
+  QUANTILE_INDICES:
+  - 0
+  - 2

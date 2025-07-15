@@ -1,0 +1,15 @@
+# Adaptive configuration for MLP
+# Inherits from adaptive_config.yaml and adds model-specific settings
+
+# Import base adaptive settings
+__BASE__: adaptive_config.yaml
+
+# Model-specific settings
+MODEL_TYPE: "mlp"
+
+# Override any model-specific parameters here
+
+MLP:
+  HIDDEN_DIMS: [512, 256, 128, 64]  # Deeper for more expressiveness
+  DROPOUT: 0.1  # Less dropout for adaptive learning
+  ACTIVATION: "elu"  # Smoother activation

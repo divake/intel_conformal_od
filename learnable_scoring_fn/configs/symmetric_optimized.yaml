@@ -1,0 +1,34 @@
+# Optimized configuration for 88-90.5% coverage with minimal MPIW
+
+# Training parameters
+learning_rate: 0.001
+epochs: 100
+batch_size: 256
+early_stopping_patience: 15
+
+# Model architecture
+hidden_dims: [256, 128, 64]  # Deeper network for better adaptation
+dropout_rate: 0.1
+activation: elu  # Smoother gradients
+use_batch_norm: true
+
+# Loss function - optimized for tight coverage control
+target_coverage: 0.89  # Target middle of 88-90.5% range
+lambda_efficiency: 0.35  # High weight on efficiency to minimize MPIW
+coverage_loss_type: smooth_l1
+size_normalization: true
+
+# Calibration - allow aggressive tau values
+tau_smoothing: 0.6  # Less smoothing for faster adaptation
+min_tau: 0.05  # Very low minimum to allow tight intervals
+max_tau: 3.0  # Reduced max since we don't need very large intervals
+
+# Optimization
+lr_scheduler: cosine
+min_lr: 0.0000001
+weight_decay: 0.0001
+grad_clip_norm: 1.0
+warmup_epochs: 3  # Shorter warmup
+
+# Data augmentation (optional)
+augment_calibration: false  # Can be enabled for robustness

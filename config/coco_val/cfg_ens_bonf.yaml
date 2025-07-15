@@ -1,0 +1,112 @@
+CALIBRATION:
+  BOX_CORRECTION: bonferroni
+  BOX_SET_STRATEGY: max
+  FRACTION: 0.5
+  ONE_SIDED_PI: false
+  TRIALS: 100
+DATALOADER:
+  TEST:
+    BATCH_SIZE: 1
+    COLLATE_FN: null
+    NUM_WORKERS: 0
+  TRAIN:
+    ASPECT_RATIO_GROUPING: true
+    COLLATE_FN: null
+    NUM_WORKERS: 0
+    TOTAL_BATCH_SIZE: 16
+DATASETS:
+  DATASET:
+    ANN_FILE: coco/annotations/instances_val2017.json
+    CHANNELS: BGR
+    FILTER_EMPTY: true
+    FORMAT: coco
+    IMG_DIR: coco/val2017
+    METADATA_FILE: null
+    NAME: coco_val
+  DIR: /ssd_4TB/divake/conformal-od/data
+MODEL:
+  AP_EVAL: false
+  BOX_MATCHING: box
+  CHECKPOINT_PATH: null
+  CLASS_MATCHING: false
+  CONFIG:
+    DATALOADER:
+      ASPECT_RATIO_GROUPING: true
+      NUM_WORKERS: 0
+    INPUT:
+      CROP:
+        ENABLED: false
+        SIZE:
+        - 0.9
+        - 0.9
+        TYPE: relative_range
+      FORMAT: BGR
+      MASK_FORMAT: polygon
+      MAX_SIZE_TEST: 1333
+      MAX_SIZE_TRAIN: 1333
+      MIN_SIZE_TEST: 800
+      MIN_SIZE_TRAIN:
+      - 640
+      - 672
+      - 704
+      - 736
+      - 768
+      - 800
+      MIN_SIZE_TRAIN_SAMPLING: choice
+      RANDOM_FLIP: horizontal
+    MODEL:
+      DEVICE: cpu
+      ROI_HEADS:
+        NAME: StandardROIHeads
+        NMS_THRESH_TEST: 0.6
+        NUM_CLASSES: 80
+        SCORE_THRESH_TEST: 0.5
+    OUTPUT_DIR: ../../../../media/atimans/hdd/output
+    SEED: 6666666
+    SOLVER:
+      BASE_LR: 0.02
+      CHECKPOINT_PERIOD: 500
+      IMS_PER_BATCH: 16
+      MAX_ITER: 5000
+  DEVICE: cpu
+  ENSEMBLE:
+    FILE:
+    - /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_R_50_FPN_3x.yaml
+    - /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_R_50_DC5_3x.yaml
+    - /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_R_101_DC5_3x.yaml
+    - /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_R_101_FPN_3x.yaml
+    - /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml
+    ID:
+    - r50fpn
+    - r50dc5
+    - r101dc5
+    - r101fpn
+    - x101fpn
+    MIN_DETECTS: 2
+    NAME:
+    - Faster R-CNN R50-FPN
+    - Faster R-CNN R50-DC5
+    - Faster R-CNN R101-DC5
+    - Faster R-CNN R101-FPN
+    - Faster R-CNN X101-FPN
+    PARAMS: false
+    PARAMS_VALUES:
+    - - 0.7
+      - 0.05
+    - - 0.8
+      - 0.05
+    SIZE: 5
+    WEIGHTS: score
+  FILE: /ssd_4TB/divake/conformal-od/detectron2/configs/COCO-Detection/faster_rcnn_X_101_32x8d_FPN_3x.yaml
+  ID: x101fpn
+  IOU_THRESH_TEST: 0.5
+  LOCAL_CHECKPOINT: false
+  NAME: Faster R-CNN X101-FPN
+PROJECT:
+  CHECKPOINT_DIR: checkpoints
+  CODE_DIR: conformalbb
+  CONFIG_DIR: conformalbb/config
+  OUTPUT_DIR: /ssd_4TB/divake/conformal-od/output
+  PLOT_DIR: plots
+  RESULTS_DIR: results
+  SEED: 6666666

@@ -1,0 +1,770 @@
+[
+  {
+    "image_name": "000000392228",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000392228.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      480,
+      640
+    ]
+  },
+  {
+    "image_name": "000000417085",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000417085.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      360
+    ]
+  },
+  {
+    "image_name": "000000573626",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000573626.jpg",
+    "total_predictions": 3,
+    "matched_predictions": 3,
+    "covered_predictions": 3,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      375
+    ]
+  },
+  {
+    "image_name": "000000342295",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000342295.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      333,
+      500
+    ]
+  },
+  {
+    "image_name": "000000505451",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000505451.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      444,
+      265
+    ]
+  },
+  {
+    "image_name": "000000542089",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000542089.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      375,
+      500
+    ]
+  },
+  {
+    "image_name": "000000224222",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000224222.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 4,
+    "covered_predictions": 4,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      426
+    ]
+  },
+  {
+    "image_name": "000000222458",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000222458.jpg",
+    "total_predictions": 12,
+    "matched_predictions": 8,
+    "covered_predictions": 8,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      424
+    ]
+  },
+  {
+    "image_name": "000000229311",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000229311.jpg",
+    "total_predictions": 10,
+    "matched_predictions": 4,
+    "covered_predictions": 4,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      375
+    ]
+  },
+  {
+    "image_name": "000000057725",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000057725.jpg",
+    "total_predictions": 3,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000392481",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000392481.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000045090",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000045090.jpg",
+    "total_predictions": 8,
+    "matched_predictions": 3,
+    "covered_predictions": 3,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      259
+    ]
+  },
+  {
+    "image_name": "000000372307",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000372307.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      428
+    ]
+  },
+  {
+    "image_name": "000000359677",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000359677.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      427,
+      640
+    ]
+  },
+  {
+    "image_name": "000000506454",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000506454.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000562818",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000562818.jpg",
+    "total_predictions": 14,
+    "matched_predictions": 9,
+    "covered_predictions": 9,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000479099",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000479099.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000298697",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000298697.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000187745",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000187745.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000409358",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000409358.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      612,
+      612
+    ]
+  },
+  {
+    "image_name": "000000364557",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000364557.jpg",
+    "total_predictions": 7,
+    "matched_predictions": 4,
+    "covered_predictions": 4,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000293071",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000293071.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 4,
+    "covered_predictions": 4,
+    "coverage_rate": 1.0,
+    "image_size": [
+      335,
+      500
+    ]
+  },
+  {
+    "image_name": "000000366178",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000366178.jpg",
+    "total_predictions": 6,
+    "matched_predictions": 3,
+    "covered_predictions": 3,
+    "coverage_rate": 1.0,
+    "image_size": [
+      375,
+      500
+    ]
+  },
+  {
+    "image_name": "000000293474",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000293474.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      333
+    ]
+  },
+  {
+    "image_name": "000000396580",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000396580.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      430
+    ]
+  },
+  {
+    "image_name": "000000523033",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000523033.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 3,
+    "covered_predictions": 3,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000340272",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000340272.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 3,
+    "covered_predictions": 3,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      360
+    ]
+  },
+  {
+    "image_name": "000000022969",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000022969.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      375
+    ]
+  },
+  {
+    "image_name": "000000091619",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000091619.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      427,
+      640
+    ]
+  },
+  {
+    "image_name": "000000199395",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000199395.jpg",
+    "total_predictions": 11,
+    "matched_predictions": 11,
+    "covered_predictions": 11,
+    "coverage_rate": 1.0,
+    "image_size": [
+      427,
+      640
+    ]
+  },
+  {
+    "image_name": "000000165500",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000165500.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 4,
+    "covered_predictions": 4,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000533855",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000533855.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      428
+    ]
+  },
+  {
+    "image_name": "000000101787",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000101787.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      457,
+      640
+    ]
+  },
+  {
+    "image_name": "000000161875",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000161875.jpg",
+    "total_predictions": 6,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      422
+    ]
+  },
+  {
+    "image_name": "000000364102",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000364102.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      398
+    ]
+  },
+  {
+    "image_name": "000000579635",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000579635.jpg",
+    "total_predictions": 3,
+    "matched_predictions": 3,
+    "covered_predictions": 3,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      429
+    ]
+  },
+  {
+    "image_name": "000000245102",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000245102.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000052565",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000052565.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      458
+    ]
+  },
+  {
+    "image_name": "000000581482",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000581482.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000193162",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000193162.jpg",
+    "total_predictions": 8,
+    "matched_predictions": 5,
+    "covered_predictions": 5,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      428
+    ]
+  },
+  {
+    "image_name": "000000527215",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000527215.jpg",
+    "total_predictions": 9,
+    "matched_predictions": 8,
+    "covered_predictions": 8,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      426
+    ]
+  },
+  {
+    "image_name": "000000232646",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000232646.jpg",
+    "total_predictions": 3,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      512
+    ]
+  },
+  {
+    "image_name": "000000501023",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000501023.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      375
+    ]
+  },
+  {
+    "image_name": "000000381971",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000381971.jpg",
+    "total_predictions": 17,
+    "matched_predictions": 14,
+    "covered_predictions": 14,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000120584",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000120584.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      480,
+      640
+    ]
+  },
+  {
+    "image_name": "000000302760",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000302760.jpg",
+    "total_predictions": 3,
+    "matched_predictions": 3,
+    "covered_predictions": 3,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      375
+    ]
+  },
+  {
+    "image_name": "000000170955",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000170955.jpg",
+    "total_predictions": 3,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000424642",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000424642.jpg",
+    "total_predictions": 7,
+    "matched_predictions": 6,
+    "covered_predictions": 6,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      375
+    ]
+  },
+  {
+    "image_name": "000000051938",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000051938.jpg",
+    "total_predictions": 13,
+    "matched_predictions": 11,
+    "covered_predictions": 11,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000496722",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000496722.jpg",
+    "total_predictions": 15,
+    "matched_predictions": 7,
+    "covered_predictions": 7,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      360
+    ]
+  },
+  {
+    "image_name": "000000528578",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000528578.jpg",
+    "total_predictions": 4,
+    "matched_predictions": 2,
+    "covered_predictions": 2,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000085576",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000085576.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      400
+    ]
+  },
+  {
+    "image_name": "000000155154",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000155154.jpg",
+    "total_predictions": 2,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      375,
+      500
+    ]
+  },
+  {
+    "image_name": "000000220858",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000220858.jpg",
+    "total_predictions": 7,
+    "matched_predictions": 7,
+    "covered_predictions": 7,
+    "coverage_rate": 1.0,
+    "image_size": [
+      500,
+      367
+    ]
+  },
+  {
+    "image_name": "000000343315",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000343315.jpg",
+    "total_predictions": 1,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      478
+    ]
+  },
+  {
+    "image_name": "000000286994",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000286994.jpg",
+    "total_predictions": 11,
+    "matched_predictions": 9,
+    "covered_predictions": 9,
+    "coverage_rate": 1.0,
+    "image_size": [
+      640,
+      480
+    ]
+  },
+  {
+    "image_name": "000000033638",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000033638.jpg",
+    "total_predictions": 9,
+    "matched_predictions": 1,
+    "covered_predictions": 1,
+    "coverage_rate": 1.0,
+    "image_size": [
+      425,
+      640
+    ]
+  },
+  {
+    "image_name": "000000163314",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000163314.jpg",
+    "total_predictions": 25,
+    "matched_predictions": 17,
+    "covered_predictions": 16,
+    "coverage_rate": 0.9411764705882353,
+    "image_size": [
+      500,
+      331
+    ]
+  },
+  {
+    "image_name": "000000239857",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000239857.jpg",
+    "total_predictions": 25,
+    "matched_predictions": 15,
+    "covered_predictions": 14,
+    "coverage_rate": 0.9333333333333333,
+    "image_size": [
+      500,
+      333
+    ]
+  },
+  {
+    "image_name": "000000060886",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000060886.jpg",
+    "total_predictions": 25,
+    "matched_predictions": 14,
+    "covered_predictions": 13,
+    "coverage_rate": 0.9285714285714286,
+    "image_size": [
+      500,
+      333
+    ]
+  },
+  {
+    "image_name": "000000374052",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000374052.jpg",
+    "total_predictions": 19,
+    "matched_predictions": 13,
+    "covered_predictions": 12,
+    "coverage_rate": 0.9230769230769231,
+    "image_size": [
+      640,
+      427
+    ]
+  },
+  {
+    "image_name": "000000422836",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000422836.jpg",
+    "total_predictions": 19,
+    "matched_predictions": 11,
+    "covered_predictions": 10,
+    "coverage_rate": 0.9090909090909091,
+    "image_size": [
+      320,
+      240
+    ]
+  },
+  {
+    "image_name": "000000249786",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000249786.jpg",
+    "total_predictions": 20,
+    "matched_predictions": 10,
+    "covered_predictions": 9,
+    "coverage_rate": 0.9,
+    "image_size": [
+      640,
+      428
+    ]
+  },
+  {
+    "image_name": "000000532481",
+    "image_path": "/ssd_4TB/divake/conformal-od/data/coco/val2017/000000532481.jpg",
+    "total_predictions": 11,
+    "matched_predictions": 10,
+    "covered_predictions": 9,
+    "coverage_rate": 0.9,
+    "image_size": [
+      640,
+      426
+    ]
+  }
+]

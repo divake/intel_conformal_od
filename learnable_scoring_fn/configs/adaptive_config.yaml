@@ -1,0 +1,54 @@
+# Adaptive configuration for improved model training
+# This config encourages adaptive behavior instead of fixed outputs
+
+# Enable adaptive loss and model features
+USE_ADAPTIVE_LOSS: true
+
+MODEL:
+  SCORING_STRATEGY: "direct"  # Options: legacy, direct, multiplicative
+  OUTPUT_CONSTRAINT: "natural"  # Options: legacy, natural, unconstrained
+
+DATA:
+  CACHE_DIR: "experiments/cache"
+  CALIB_FRACTION: 0.5
+  LIMIT_DATASET_SIZE: false
+  MAX_TRAIN_IMAGES: -1
+  MAX_VAL_IMAGES: -1
+  BATCH_SIZE: 256  # Larger batch for better ranking loss
+
+TRAINING:
+  NUM_EPOCHS: 150  # More epochs for adaptive learning
+  BATCH_SIZE: 256
+  LEARNING_RATE: 0.0005  # Lower LR for stable adaptive training
+  WEIGHT_DECAY: 0.00001  # Less regularization
+  GRAD_CLIP_NORM: 1.0
+  EARLY_STOPPING_PATIENCE: 30  # More patience
+  CHECKPOINT_FREQUENCY: 10
+  DEVICE: "cuda"
+  SEED: 42
+  LR_SCHEDULER:
+    TYPE: "cosine"  # Smoother schedule
+    ETA_MIN: 1e-7
+
+LOSS:
+  TARGET_COVERAGE: 0.9
+  EFFICIENCY_WEIGHT: 0.1  # Fixed weight, not adaptive!
+  RANKING_WEIGHT: 0.05  # Ensure proper ordering
+  VARIANCE_WEIGHT: 0.02  # Encourage output diversity
+  SMOOTHNESS_WEIGHT: 0.01  # Smooth predictions
+  # No CALIBRATION_WEIGHT for adaptive loss
+
+OUTPUT:
+  BASE_DIR: "experiments/results_adaptive"
+  SAVE_FREQUENCY: 10
+  PLOT_RESULTS: true
+  SAVE_PREDICTIONS: true
+
+VALIDATION:
+  EVAL_FREQUENCY: 1
+  VERBOSE: true
+
+WANDB:
+  USE_WANDB: false
+  PROJECT: "conformal-scoring-adaptive"
+  TAGS: ["adaptive", "scoring", "improved"]
