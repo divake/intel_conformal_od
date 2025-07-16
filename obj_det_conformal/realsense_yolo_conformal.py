@@ -266,20 +266,27 @@ class YOLOConformalDetector:
         if depth_avg is not None and depth_avg > 0:
             label += f" | {depth_avg:.2f}m"
         
-        # Label background
-        label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
-        cv2.rectangle(image, (x1, y1 - 20), (x1 + label_size[0] + 5, y1), color_main, -1)
-        cv2.putText(image, label, (x1 + 2, y1 - 5),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        # Label background - use black for better contrast
+        label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+        cv2.rectangle(image, (x1, y1 - 25), (x1 + label_size[0] + 10, y1 - 2), (0, 0, 0), -1)
         
-        # Uncertainty info at bottom of inner box
+        # White text with thicker font
+        cv2.putText(image, label, (x1 + 5, y1 - 7),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+        
+        # Uncertainty info - black background with white text
         if self.quantile_threshold is not None:
             margin_text = f"90% CI: ±{margin}px"
         else:
             margin_text = f"Margin: ±{margin}px"
         
-        cv2.putText(image, margin_text, (x1, y2 + 15),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.4, color_main, 1)
+        # Get text size for background
+        text_size, _ = cv2.getTextSize(margin_text, cv2.FONT_HERSHEY_SIMPLEX, 0.45, 1)
+        cv2.rectangle(image, (x1, y2 + 5), (x1 + text_size[0] + 6, y2 + 22), (0, 0, 0), -1)
+        
+        # White text
+        cv2.putText(image, margin_text, (x1 + 3, y2 + 18),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.45, (255, 255, 255), 1)
     
     def get_depth_at_bbox(self, depth_image, bbox):
         """Get depth in bounding box using robust estimation"""
