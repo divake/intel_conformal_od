@@ -1,6 +1,8 @@
 # Conformal Object Detection on Intel Hardware
 ## Real-time Uncertainty Quantification for Object Detection
 
+![Conformal Object Detection Demo](demo.gif)
+
 This repository demonstrates **Conformal Object Detection** optimized for Intel hardware, specifically the Intel NUC 14 Pro with Intel Core Ultra 7 165H processor. It provides real-time object detection with mathematically rigorous uncertainty quantification using conformal prediction methods.
 
 ## 🎯 Overview
