@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, "/ssd_4TB/divake/conformal-od/detectron2")
+sys.path.insert(0, "/home/nus-ai/divek_nus/conformal_od/detectron2")
 
 import os
 import argparse
