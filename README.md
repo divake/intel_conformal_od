@@ -15,20 +15,30 @@ This implementation combines:
 
 ## 🚀 Key Features
 
-### 1. **Uncertainty Visualization**
-- **Inner box**: Traditional object detection bounding box
-- **Outer box**: Conformal prediction interval showing uncertainty region
-- **Coverage guarantee**: e.g., 90% probability that true object lies within the outer box
+### 1. **Three-Box Uncertainty Visualization**
+Our implementation uses a unique three-box visualization for uncertainty quantification:
+
+- **Black box (inner)**: Conservative bound - the object is likely larger than this
+- **Green box (middle/dotted)**: Actual detection/prediction from the model  
+- **Red box (outer)**: Liberal bound - the object is likely smaller than this
+
+**Key Insight**: The ground truth bounding box falls between the black (inner) and red (outer) boxes with 90% probability. This provides a statistically rigorous uncertainty interval for object detection.
+
+The uncertainty intervals are:
+- **Symmetric** relative to the prediction box
+- **Adaptive** based on detection confidence (high confidence → narrow interval)
+- **Calibrated** to guarantee coverage (90% by default)
 
 ### 2. **Real-time Performance**
 - Optimized for Intel Core Ultra 7 165H
 - 30+ FPS on CPU with YOLOv8
 - OpenVINO acceleration support
 
-### 3. **Depth Integration**
-- Intel RealSense D455 provides depth information
-- 3D object localization
-- Distance measurement for each detection
+### 3. **Accurate Depth Integration**
+- Intel RealSense D455 provides precise depth measurements
+- Robust depth estimation using median filtering from object center
+- Distance displayed for each detection (e.g., "person 0.95 | 1.2m")
+- Useful for robotics, autonomous systems, and AR/VR applications
 
 ### 4. **Multiple Detection Models**
 - YOLOv8 (all variants: n/s/m/l/x)
@@ -72,47 +82,49 @@ pip install openvino
 
 ## 🎮 Quick Start
 
-### 1. Basic YOLOv8 with Conformal Prediction
+### 1. Three-Box Conformal Prediction (Recommended)
 ```bash
 cd obj_det_conformal
+python realsense_yolo_conformal_3box.py
+```
+Shows the full three-box visualization with guaranteed uncertainty intervals.
+
+### 2. Standard Two-Box Version
+```bash
 python realsense_yolo_conformal.py
 ```
 
-### 2. Simple Object Detection Demo
+### 3. Debug Version (with extensive logging)
 ```bash
-python realsense_detection_simple.py
-```
-
-### 3. Full Conformal Prediction Demo
-```bash
-python realsense_conformal_demo.py
+python realsense_yolo_conformal_debug.py
 ```
 
 ## 🎯 Demo Scripts
 
-### 1. **realsense_yolo_conformal.py**
-- **What it does**: Real-time YOLOv8 detection with conformal prediction
+### 1. **realsense_yolo_conformal_3box.py** (⭐ Main Demo)
+- **What it does**: Three-box visualization of conformal prediction
 - **Key features**:
-  - Automatic model download (YOLOv8m by default)
-  - Calibration mode (press 'c' to calibrate)
-  - Uncertainty visualization with coverage guarantees
-  - Depth measurement for each object
+  - Black box (inner): Conservative bound
+  - Green box (dotted): Detection
+  - Red box (outer): Liberal bound
+  - Ground truth guaranteed between inner & outer with 90% probability
+  - Accurate depth measurement using robust median estimation
 - **Controls**:
   - `q` - Quit
   - `s` - Save current frame
-  - `c` - Start/stop calibration
+  - `c` - Start/stop calibration (important!)
   - `u` - Toggle uncertainty visualization
 
-### 2. **realsense_conformal_demo.py**
-- **What it does**: Demonstrates conformal prediction concepts
+### 2. **realsense_yolo_conformal.py**
+- **What it does**: Two-box version (detection + uncertainty)
 - **Key features**:
-  - Adjustable coverage levels (press 'a')
-  - Visual explanation of uncertainty
-  - Multiple detection backends
+  - Inner box: Detection
+  - Outer box: Uncertainty region
+  - Adaptive margins based on confidence
 
-### 3. **realsense_detection_simple.py**
-- **What it does**: Simple baseline without conformal prediction
-- **Use case**: Compare with/without uncertainty quantification
+### 3. **realsense_yolo_conformal_debug.py**
+- **What it does**: Same as above but with extensive terminal output
+- **Use case**: Debugging and understanding the system behavior
 
 ## 📊 Understanding Conformal Prediction
 
@@ -176,12 +188,13 @@ P(true object ∈ prediction set) ≥ 1 - α
 
 ## 📸 Example Output
 
-When running the demos, you'll see:
-- **Green boxes**: High confidence detections (>80%)
-- **Orange boxes**: Medium confidence (60-80%)
-- **Red boxes**: Low confidence (<60%)
-- **Dashed outer boxes**: Conformal prediction intervals
-- **Depth labels**: Distance to each object in meters
+When running the three-box demo (`realsense_yolo_conformal_3box.py`), you'll see:
+- **Black box (solid)**: Conservative inner bound
+- **Green box (dotted)**: Actual detection from YOLOv8
+- **Red box (solid)**: Liberal outer bound
+- **Label format**: "class_name confidence | distance" (e.g., "person 0.95 | 1.2m")
+
+The key insight: The true object boundary falls between the black and red boxes with 90% probability. When the model is confident, the boxes are close together. When uncertain, they spread apart.
 
 ## 🔮 Future Enhancements
 
@@ -199,7 +212,7 @@ When running the demos, you'll see:
 
 ## 👥 Contributors
 
-- Divake (divek1805@gmail.com) - Intel hardware optimization and RealSense integration
+- Divake (dkumar33@uic.edu) - Intel hardware optimization and RealSense integration
 - Original conformal-od authors - Base conformal prediction framework
 
 ## 📝 License

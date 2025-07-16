@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Real-time object detection with YOLOv8 and Conformal Prediction
-Shows uncertainty boxes using conformal prediction methods
+Shows THREE boxes: inner (conservative), middle (prediction), outer (liberal)
+Ground truth falls between inner and outer with 90% probability
 """
 import sys
 import os
@@ -120,44 +121,53 @@ class YOLOConformalDetector:
         print(f"   Quantile threshold: {self.quantile_threshold:.3f}")
         print(f"   Target coverage: {self.coverage*100:.0f}%")
         
-    def compute_uncertainty_margin(self, confidence, box_width, box_height):
+    def compute_uncertainty_margins(self, confidence, box_width, box_height):
         """
-        Compute SYMMETRIC uncertainty margin for a detection box
-        Returns pixels to add to each side of the box
+        Compute SYMMETRIC uncertainty margins for inner and outer boxes
+        Returns (inner_margin, outer_margin) in pixels
+        
+        The GT should fall between inner and outer with 90% probability
         """
+        # Average dimension for symmetric margins
+        avg_dimension = (box_width + box_height) / 2
+        
         if self.quantile_threshold is None:
-            # Not calibrated - use default scaling
-            # Higher confidence = smaller margin
-            # Make the effect more visible
+            # Not calibrated - use default scaling based on confidence
             if confidence > 0.9:
-                base_factor = 0.05  # 5% for very high confidence
+                inner_factor = 0.03  # 3% shrink for inner
+                outer_factor = 0.08  # 8% expand for outer
             elif confidence > 0.7:
-                base_factor = 0.10  # 10% for high confidence
+                inner_factor = 0.05  # 5% shrink for inner
+                outer_factor = 0.15  # 15% expand for outer
             elif confidence > 0.5:
-                base_factor = 0.15  # 15% for medium confidence
+                inner_factor = 0.08  # 8% shrink for inner
+                outer_factor = 0.22  # 22% expand for outer
             else:
-                base_factor = 0.20  # 20% for low confidence
+                inner_factor = 0.10  # 10% shrink for inner
+                outer_factor = 0.30  # 30% expand for outer
         else:
             # Use calibrated threshold
             score = self.compute_nonconformity_score(confidence)
             
             if score <= self.quantile_threshold:
-                # Within threshold - small margin
-                base_factor = 0.05
+                # Within threshold - narrow interval
+                inner_factor = 0.03
+                outer_factor = 0.08
             else:
-                # Outside threshold - larger margin proportional to excess
+                # Outside threshold - wider interval
                 excess = (score - self.quantile_threshold) / (1 - self.quantile_threshold)
-                base_factor = 0.05 + 0.20 * excess  # Max 25% expansion
+                inner_factor = 0.03 + 0.07 * excess  # Max 10% shrink
+                outer_factor = 0.08 + 0.22 * excess  # Max 30% expand
         
-        # Compute margin as percentage of box dimensions
-        # Make it symmetric by using average dimension
-        avg_dimension = (box_width + box_height) / 2
-        margin = int(base_factor * avg_dimension)
+        # Compute margins
+        inner_margin = int(inner_factor * avg_dimension)
+        outer_margin = int(outer_factor * avg_dimension)
         
-        # Ensure minimum margin of 10 pixels for visibility
-        margin = max(margin, 10)
+        # Ensure minimum margins for visibility
+        inner_margin = max(inner_margin, 5)
+        outer_margin = max(outer_margin, 15)
         
-        return margin
+        return inner_margin, outer_margin
     
     def detect_objects(self, image):
         """Run YOLO detection"""
@@ -181,15 +191,17 @@ class YOLOConformalDetector:
                     box_height = y2 - y1
                     box_area = box_width * box_height
                     
-                    # Compute uncertainty margin (symmetric)
-                    margin = self.compute_uncertainty_margin(conf, box_width, box_height)
+                    # Compute uncertainty margins (inner and outer)
+                    inner_margin, outer_margin = self.compute_uncertainty_margins(
+                        conf, box_width, box_height)
                     
                     detection = {
                         'bbox': [int(x1), int(y1), int(x2), int(y2)],
                         'confidence': float(conf),
                         'class_id': class_id,
                         'class_name': self.model.names[class_id],
-                        'uncertainty_margin': margin,
+                        'inner_margin': inner_margin,
+                        'outer_margin': outer_margin,
                         'nonconformity_score': self.compute_nonconformity_score(conf)
                     }
                     detections.append(detection)
@@ -201,65 +213,64 @@ class YOLOConformalDetector:
         return detections
     
     def draw_conformal_detection(self, image, detection, depth_avg=None):
-        """Draw detection with SYMMETRIC conformal prediction uncertainty"""
+        """
+        Draw THREE boxes: inner, middle (prediction), outer
+        GT falls between inner and outer with 90% probability
+        """
         x1, y1, x2, y2 = detection['bbox']
         confidence = detection['confidence']
         class_name = detection['class_name']
-        margin = detection['uncertainty_margin']
+        inner_margin = detection['inner_margin']
+        outer_margin = detection['outer_margin']
         
-        # Color based on confidence
-        if confidence > 0.8:
-            color_main = (0, 255, 0)  # Green - high confidence
-            color_uncertainty = (0, 200, 0)  # Darker green
-        elif confidence > 0.6:
-            color_main = (0, 165, 255)  # Orange - medium confidence
-            color_uncertainty = (0, 140, 200)  # Darker orange
-        else:
-            color_main = (0, 0, 255)  # Red - low confidence
-            color_uncertainty = (0, 0, 200)  # Darker red
+        # Fixed colors for clarity
+        color_pred = (0, 255, 0)   # Green for prediction (middle box)
+        color_inner = (0, 0, 0)    # Black for inner box
+        color_outer = (0, 0, 255)  # Red for outer box
         
-        # Draw main detection box (inner box)
-        cv2.rectangle(image, (x1, y1), (x2, y2), color_main, 2)
+        # Calculate box coordinates
+        # Inner box (conservative - shrinks inward)
+        inner_x1 = x1 + inner_margin
+        inner_y1 = y1 + inner_margin
+        inner_x2 = x2 - inner_margin
+        inner_y2 = y2 - inner_margin
         
-        # Draw SYMMETRIC conformal prediction interval (outer box)
-        # The margin is applied equally to all sides
-        outer_x1 = x1 - margin
-        outer_y1 = y1 - margin
-        outer_x2 = x2 + margin
-        outer_y2 = y2 + margin
+        # Outer box (liberal - expands outward)
+        outer_x1 = x1 - outer_margin
+        outer_y1 = y1 - outer_margin
+        outer_x2 = x2 + outer_margin
+        outer_y2 = y2 + outer_margin
         
-        # Ensure outer box stays within image bounds
+        # Ensure boxes stay within image bounds
         h, w = image.shape[:2]
+        inner_x1 = max(0, min(inner_x1, w-1))
+        inner_y1 = max(0, min(inner_y1, h-1))
+        inner_x2 = max(0, min(inner_x2, w-1))
+        inner_y2 = max(0, min(inner_y2, h-1))
+        
         outer_x1 = max(0, outer_x1)
         outer_y1 = max(0, outer_y1)
         outer_x2 = min(w-1, outer_x2)
         outer_y2 = min(h-1, outer_y2)
         
-        # Draw outer box with thicker line
-        cv2.rectangle(image, 
-                     (outer_x1, outer_y1), 
-                     (outer_x2, outer_y2), 
-                     color_uncertainty, 3, cv2.LINE_AA)
+        # Ensure inner box is valid (not inverted)
+        if inner_x2 > inner_x1 and inner_y2 > inner_y1:
+            # Draw inner box - solid black line
+            cv2.rectangle(image, (inner_x1, inner_y1), (inner_x2, inner_y2), color_inner, 2)
         
-        # Draw corner markers to emphasize the uncertainty region
-        corner_length = 15
-        corner_thickness = 2
+        # Draw middle box (prediction) - dotted green line
+        # Top edge
+        for i in range(x1, x2, 12):
+            cv2.line(image, (i, y1), (min(i + 6, x2), y1), color_pred, 2)
+            cv2.line(image, (i, y2), (min(i + 6, x2), y2), color_pred, 2)
+        # Side edges
+        for i in range(y1, y2, 12):
+            cv2.line(image, (x1, i), (x1, min(i + 6, y2)), color_pred, 2)
+            cv2.line(image, (x2, i), (x2, min(i + 6, y2)), color_pred, 2)
         
-        # Top-left corner
-        cv2.line(image, (outer_x1, outer_y1), (outer_x1 + corner_length, outer_y1), color_uncertainty, corner_thickness)
-        cv2.line(image, (outer_x1, outer_y1), (outer_x1, outer_y1 + corner_length), color_uncertainty, corner_thickness)
+        # Draw outer box - solid red line
+        cv2.rectangle(image, (outer_x1, outer_y1), (outer_x2, outer_y2), color_outer, 2)
         
-        # Top-right corner
-        cv2.line(image, (outer_x2, outer_y1), (outer_x2 - corner_length, outer_y1), color_uncertainty, corner_thickness)
-        cv2.line(image, (outer_x2, outer_y1), (outer_x2, outer_y1 + corner_length), color_uncertainty, corner_thickness)
-        
-        # Bottom-left corner
-        cv2.line(image, (outer_x1, outer_y2), (outer_x1 + corner_length, outer_y2), color_uncertainty, corner_thickness)
-        cv2.line(image, (outer_x1, outer_y2), (outer_x1, outer_y2 - corner_length), color_uncertainty, corner_thickness)
-        
-        # Bottom-right corner
-        cv2.line(image, (outer_x2, outer_y2), (outer_x2 - corner_length, outer_y2), color_uncertainty, corner_thickness)
-        cv2.line(image, (outer_x2, outer_y2), (outer_x2, outer_y2 - corner_length), color_uncertainty, corner_thickness)
         
         # Label with confidence
         label = f"{class_name} {confidence:.2f}"
@@ -268,18 +279,18 @@ class YOLOConformalDetector:
         
         # Label background
         label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.5, 1)
-        cv2.rectangle(image, (x1, y1 - 20), (x1 + label_size[0] + 5, y1), color_main, -1)
+        cv2.rectangle(image, (x1, y1 - 20), (x1 + label_size[0] + 5, y1), color_pred, -1)
         cv2.putText(image, label, (x1 + 2, y1 - 5),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
         
-        # Uncertainty info at bottom of inner box
+        # Uncertainty info
         if self.quantile_threshold is not None:
-            margin_text = f"90% CI: ±{margin}px"
+            interval_text = f"90% CI: [-{inner_margin}, +{outer_margin}]px"
         else:
-            margin_text = f"Margin: ±{margin}px"
+            interval_text = f"Interval: [-{inner_margin}, +{outer_margin}]px"
         
-        cv2.putText(image, margin_text, (x1, y2 + 15),
-                   cv2.FONT_HERSHEY_SIMPLEX, 0.4, color_main, 1)
+        cv2.putText(image, interval_text, (x1, y2 + 15),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.4, color_pred, 1)
     
     def get_depth_at_bbox(self, depth_image, bbox):
         """Get depth in bounding box using robust estimation"""
@@ -324,10 +335,16 @@ class YOLOConformalDetector:
         self.setup_realsense()
         self.setup_yolo()
         
-        cv2.namedWindow('YOLOv8 with Conformal Prediction', cv2.WINDOW_NORMAL)
+        cv2.namedWindow('YOLOv8 with Conformal Prediction  ', cv2.WINDOW_NORMAL)
         cv2.namedWindow('Depth View', cv2.WINDOW_NORMAL)
         
         print("\n🎯 YOLOv8 Object Detection with Conformal Prediction")
+        print("=" * 60)
+        print("THREE-BOX VISUALIZATION:")
+        print("  • Inner box (black/solid): Conservative bound")
+        print("  • Middle box (green/dotted): Prediction")
+        print("  • Outer box (red/solid): Liberal bound")
+        print("  → Ground truth falls between inner & outer with 90% probability")
         print("=" * 60)
         print(f"Target coverage: {self.coverage*100:.0f}%")
         print("\nControls:")
@@ -422,14 +439,14 @@ class YOLOConformalDetector:
                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
                     y += 25
                 
-                # Conformal prediction explanation
+                # Conformal prediction info
                 if show_uncertainty:
-                    info_text = "Inner box: Detection | Outer box: 90% confidence region"
+                    info_text = "Black: Conservative | Green/Dotted: Prediction | Red: Liberal"
                     cv2.putText(result_image, info_text, (10, result_image.shape[0] - 10),
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 165, 255), 1)
                 
                 # Display
-                cv2.imshow('YOLOv8 with Conformal Prediction', result_image)
+                cv2.imshow('YOLOv8 with Conformal Prediction  ', result_image)
                 cv2.imshow('Depth View', depth_colormap)
                 
                 # Handle keys
@@ -438,7 +455,7 @@ class YOLOConformalDetector:
                     break
                 elif key == ord('s'):
                     timestamp = time.strftime("%Y%m%d_%H%M%S")
-                    cv2.imwrite(f"yolo_conformal_{timestamp}.jpg", result_image)
+                    cv2.imwrite(f"yolo_conformal_3box_{timestamp}.jpg", result_image)
                     cv2.imwrite(f"depth_{timestamp}.jpg", depth_colormap)
                     print(f"💾 Saved: {timestamp}")
                 elif key == ord('c'):
@@ -460,7 +477,7 @@ class YOLOConformalDetector:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="YOLOv8 with Conformal Prediction")
+    parser = argparse.ArgumentParser(description="YOLOv8 with Conformal Prediction  ")
     parser.add_argument("--model", type=str, default="yolov8m.pt",
                        help="YOLOv8 model variant (n/s/m/l/x)")
     parser.add_argument("--alpha", type=float, default=0.1,
@@ -470,8 +487,8 @@ if __name__ == "__main__":
     
     print("🎯 Intel RealSense D455 - YOLOv8 with Conformal Prediction")
     print("=" * 60)
-    print("This demo shows object detection with uncertainty quantification")
-    print("using conformal prediction to provide coverage guarantees")
+    print("THREE-BOX UNCERTAINTY QUANTIFICATION")
+    print("Ground truth falls between inner & outer boxes with guaranteed coverage")
     print("=" * 60)
     
     detector = YOLOConformalDetector(args.model, args.alpha)

@@ -2,6 +2,7 @@
 """
 Real-time object detection with YOLOv8 and Conformal Prediction
 Shows uncertainty boxes using conformal prediction methods
+WITH EXTENSIVE DEBUG OUTPUT
 """
 import sys
 import os
@@ -12,6 +13,7 @@ import torch
 import pyrealsense2 as rs
 from pathlib import Path
 import argparse
+from datetime import datetime
 
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -35,6 +37,13 @@ class YOLOConformalDetector:
             model_name: YOLOv8 model variant (n/s/m/l/x)
             alpha: Miscoverage level (0.1 = 90% coverage)
         """
+        print(f"\n{'='*60}")
+        print(f"INITIALIZING YOLO CONFORMAL DETECTOR")
+        print(f"{'='*60}")
+        print(f"Model: {model_name}")
+        print(f"Alpha: {alpha} (Coverage: {(1-alpha)*100}%)")
+        print(f"{'='*60}\n")
+        
         # RealSense setup
         self.pipeline = rs.pipeline()
         self.config = rs.config()
@@ -55,8 +64,14 @@ class YOLOConformalDetector:
         self.calibration_count = 0
         self.calibration_target = 100  # Number of frames for calibration
         
+        # Debug counters
+        self.frame_count = 0
+        self.detection_count = 0
+        
     def setup_realsense(self):
         """Configure RealSense pipeline"""
+        print("\n[REALSENSE] Setting up Intel RealSense D455...")
+        
         # Configure streams
         self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
         self.config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
@@ -69,15 +84,18 @@ class YOLOConformalDetector:
         
         # Get device info
         device = profile.get_device()
-        print(f"✅ Connected to {device.get_info(rs.camera_info.name)}")
+        device_name = device.get_info(rs.camera_info.name)
+        print(f"[REALSENSE] ✅ Connected to {device_name}")
         
         # Get depth scale
         depth_sensor = device.first_depth_sensor()
         self.depth_scale = depth_sensor.get_depth_scale()
+        print(f"[REALSENSE] Depth Scale: {self.depth_scale}")
+        print(f"[REALSENSE] Setup complete!\n")
         
     def setup_yolo(self):
         """Setup YOLOv8 model"""
-        print(f"📊 Loading {self.model_name}...")
+        print(f"\n[YOLO] Loading {self.model_name}...")
         
         # Download and load model
         self.model = YOLO(self.model_name)
@@ -85,9 +103,11 @@ class YOLOConformalDetector:
         # Set to evaluation mode
         self.model.fuse()
         
-        print(f"✅ YOLOv8 loaded successfully")
-        print(f"   Model: {self.model_name}")
-        print(f"   Classes: {len(self.model.names)}")
+        print(f"[YOLO] ✅ Model loaded successfully")
+        print(f"[YOLO] Model type: {type(self.model)}")
+        print(f"[YOLO] Number of classes: {len(self.model.names)}")
+        print(f"[YOLO] Class names (first 10): {list(self.model.names.values())[:10]}...")
+        print(f"[YOLO] Setup complete!\n")
         
     def compute_nonconformity_score(self, confidence):
         """
@@ -95,15 +115,19 @@ class YOLOConformalDetector:
         Higher score = less conforming = more uncertainty
         """
         # Simple score: inverse of confidence
-        # You can make this more sophisticated
-        return 1.0 - confidence
+        score = 1.0 - confidence
+        return score
     
     def calibrate_quantile(self):
         """
         Compute quantile threshold from calibration scores
         """
         if len(self.calibration_scores) == 0:
+            print("[CALIBRATION] No calibration scores collected!")
             return
+        
+        print(f"\n[CALIBRATION] Computing quantile threshold...")
+        print(f"[CALIBRATION] Number of scores: {len(self.calibration_scores)}")
         
         # Sort scores
         sorted_scores = np.sort(self.calibration_scores)
@@ -115,16 +139,23 @@ class YOLOConformalDetector:
         
         self.quantile_threshold = sorted_scores[q_index]
         
-        print(f"\n📊 Calibration complete!")
-        print(f"   Samples: {n}")
-        print(f"   Quantile threshold: {self.quantile_threshold:.3f}")
-        print(f"   Target coverage: {self.coverage*100:.0f}%")
+        print(f"[CALIBRATION] Scores range: [{sorted_scores[0]:.4f}, {sorted_scores[-1]:.4f}]")
+        print(f"[CALIBRATION] Quantile index: {q_index}")
+        print(f"[CALIBRATION] Quantile threshold: {self.quantile_threshold:.4f}")
+        print(f"[CALIBRATION] Target coverage: {self.coverage*100:.0f}%")
+        print(f"[CALIBRATION] ✅ Calibration complete!\n")
         
     def compute_uncertainty_margin(self, confidence, box_width, box_height):
         """
         Compute SYMMETRIC uncertainty margin for a detection box
         Returns pixels to add to each side of the box
         """
+        # Debug print
+        if self.frame_count % 30 == 0:  # Print every second
+            print(f"\n[MARGIN] Computing uncertainty margin:")
+            print(f"  Confidence: {confidence:.3f}")
+            print(f"  Box size: {box_width}x{box_height}")
+        
         if self.quantile_threshold is None:
             # Not calibrated - use default scaling
             # Higher confidence = smaller margin
@@ -157,6 +188,10 @@ class YOLOConformalDetector:
         # Ensure minimum margin of 10 pixels for visibility
         margin = max(margin, 10)
         
+        if self.frame_count % 30 == 0:
+            print(f"  Base factor: {base_factor:.3f}")
+            print(f"  Margin: {margin}px")
+        
         return margin
     
     def detect_objects(self, image):
@@ -165,16 +200,20 @@ class YOLOConformalDetector:
         results = self.model(image, verbose=False)
         
         detections = []
+        
         for r in results:
             if r.boxes is not None:
                 boxes = r.boxes.xyxy.cpu().numpy()
                 confidences = r.boxes.conf.cpu().numpy()
                 class_ids = r.boxes.cls.cpu().numpy().astype(int)
                 
+                print(f"\n[DETECTION] Frame {self.frame_count}: Found {len(boxes)} objects")
+                
                 for i in range(len(boxes)):
                     x1, y1, x2, y2 = boxes[i]
                     conf = confidences[i]
                     class_id = class_ids[i]
+                    class_name = self.model.names[class_id]
                     
                     # Compute box dimensions
                     box_width = x2 - x1
@@ -184,19 +223,33 @@ class YOLOConformalDetector:
                     # Compute uncertainty margin (symmetric)
                     margin = self.compute_uncertainty_margin(conf, box_width, box_height)
                     
+                    # Print detailed detection info
+                    print(f"\n  Object {i+1}:")
+                    print(f"    Class: {class_name} (ID: {class_id})")
+                    print(f"    Confidence: {conf:.3f}")
+                    print(f"    Box coords: [{int(x1)}, {int(y1)}, {int(x2)}, {int(y2)}]")
+                    print(f"    Box size: {int(box_width)}x{int(box_height)} (area: {int(box_area)})")
+                    print(f"    Uncertainty margin: ±{margin}px")
+                    print(f"    Outer box: [{int(x1-margin)}, {int(y1-margin)}, {int(x2+margin)}, {int(y2+margin)}]")
+                    
                     detection = {
                         'bbox': [int(x1), int(y1), int(x2), int(y2)],
                         'confidence': float(conf),
                         'class_id': class_id,
-                        'class_name': self.model.names[class_id],
+                        'class_name': class_name,
                         'uncertainty_margin': margin,
-                        'nonconformity_score': self.compute_nonconformity_score(conf)
+                        'nonconformity_score': self.compute_nonconformity_score(conf),
+                        'box_width': int(box_width),
+                        'box_height': int(box_height)
                     }
                     detections.append(detection)
+                    self.detection_count += 1
                     
                     # Collect calibration scores
                     if self.calibrating:
                         self.calibration_scores.append(detection['nonconformity_score'])
+                        if self.frame_count % 10 == 0:
+                            print(f"    [CALIBRATION] Score added: {detection['nonconformity_score']:.4f}")
         
         return detections
     
@@ -242,8 +295,8 @@ class YOLOConformalDetector:
                      color_uncertainty, 3, cv2.LINE_AA)
         
         # Draw corner markers to emphasize the uncertainty region
-        corner_length = 15
-        corner_thickness = 2
+        corner_length = 20
+        corner_thickness = 3
         
         # Top-left corner
         cv2.line(image, (outer_x1, outer_y1), (outer_x1 + corner_length, outer_y1), color_uncertainty, corner_thickness)
@@ -282,41 +335,18 @@ class YOLOConformalDetector:
                    cv2.FONT_HERSHEY_SIMPLEX, 0.4, color_main, 1)
     
     def get_depth_at_bbox(self, depth_image, bbox):
-        """Get depth in bounding box using robust estimation"""
+        """Get average depth in bounding box"""
         x1, y1, x2, y2 = bbox
         x1, y1 = max(0, x1), max(0, y1)
         x2 = min(depth_image.shape[1], x2)
         y2 = min(depth_image.shape[0], y2)
         
-        # Take center region of bbox (avoid edges which may have noise)
-        cx = (x1 + x2) // 2
-        cy = (y1 + y2) // 2
-        
-        # Sample from center region (25% of bbox size)
-        width = x2 - x1
-        height = y2 - y1
-        sample_w = max(width // 4, 10)
-        sample_h = max(height // 4, 10)
-        
-        # Ensure we stay within bounds
-        sx1 = max(0, cx - sample_w // 2)
-        sy1 = max(0, cy - sample_h // 2)
-        sx2 = min(depth_image.shape[1], cx + sample_w // 2)
-        sy2 = min(depth_image.shape[0], cy + sample_h // 2)
-        
-        # Get depth from center region
-        roi = depth_image[sy1:sy2, sx1:sx2]
+        roi = depth_image[y1:y2, x1:x2]
         valid_depths = roi[roi > 0]
         
-        if len(valid_depths) > 10:  # Need enough valid pixels
-            # Use median for robustness (less affected by outliers)
-            depth_mm = np.median(valid_depths)
-            depth_m = depth_mm * self.depth_scale
-            
-            # Sanity check - typical indoor depths are 0.3m to 5m
-            if 0.3 <= depth_m <= 5.0:
-                return depth_m
-        
+        if len(valid_depths) > 0:
+            avg_depth = np.mean(valid_depths) * self.depth_scale
+            return avg_depth
         return 0
     
     def run(self):
@@ -327,8 +357,9 @@ class YOLOConformalDetector:
         cv2.namedWindow('YOLOv8 with Conformal Prediction', cv2.WINDOW_NORMAL)
         cv2.namedWindow('Depth View', cv2.WINDOW_NORMAL)
         
-        print("\n🎯 YOLOv8 Object Detection with Conformal Prediction")
-        print("=" * 60)
+        print("\n" + "="*60)
+        print("🎯 YOLOv8 Object Detection with Conformal Prediction")
+        print("="*60)
         print(f"Target coverage: {self.coverage*100:.0f}%")
         print("\nControls:")
         print("  'q' - Quit")
@@ -336,9 +367,9 @@ class YOLOConformalDetector:
         print("  'c' - Start/stop calibration")
         print("  'u' - Toggle uncertainty visualization")
         print("\n⚠️  Press 'c' to calibrate conformal prediction first!")
+        print("="*60 + "\n")
         
         show_uncertainty = True
-        frame_count = 0
         fps = 0
         fps_timer = time.time()
         
@@ -358,10 +389,13 @@ class YOLOConformalDetector:
                 depth_image = np.asanyarray(depth_frame.get_data())
                 color_image = np.asanyarray(color_frame.get_data())
                 
-                frame_count += 1
-                if frame_count % 30 == 0:
+                self.frame_count += 1
+                
+                # Calculate FPS
+                if self.frame_count % 30 == 0:
                     fps = 30 / (time.time() - fps_timer)
                     fps_timer = time.time()
+                    print(f"\n[STATS] Frame: {self.frame_count}, FPS: {fps:.1f}, Total detections: {self.detection_count}")
                 
                 # Detect objects
                 start_time = time.time()
@@ -371,6 +405,8 @@ class YOLOConformalDetector:
                 # Update calibration
                 if self.calibrating:
                     self.calibration_count += 1
+                    print(f"[CALIBRATION] Progress: {self.calibration_count}/{self.calibration_target}")
+                    
                     if self.calibration_count >= self.calibration_target:
                         self.calibrating = False
                         self.calibrate_quantile()
@@ -385,6 +421,9 @@ class YOLOConformalDetector:
                 # Draw detections
                 for detection in detections:
                     depth_avg = self.get_depth_at_bbox(depth_image, detection['bbox'])
+                    
+                    if depth_avg > 0 and self.frame_count % 30 == 0:
+                        print(f"    Depth: {depth_avg:.2f}m")
                     
                     if show_uncertainty:
                         self.draw_conformal_detection(result_image, detection, depth_avg)
@@ -412,7 +451,7 @@ class YOLOConformalDetector:
                 if self.calibrating:
                     info.append(f"CALIBRATING: {self.calibration_count}/{self.calibration_target}")
                 elif self.quantile_threshold is not None:
-                    info.append(f"Calibrated ✓")
+                    info.append(f"Calibrated (τ={self.quantile_threshold:.3f})")
                 else:
                     info.append("Not calibrated")
                 
@@ -435,32 +474,36 @@ class YOLOConformalDetector:
                 # Handle keys
                 key = cv2.waitKey(1) & 0xFF
                 if key == ord('q'):
+                    print("\n[EXIT] Shutting down...")
                     break
                 elif key == ord('s'):
                     timestamp = time.strftime("%Y%m%d_%H%M%S")
                     cv2.imwrite(f"yolo_conformal_{timestamp}.jpg", result_image)
                     cv2.imwrite(f"depth_{timestamp}.jpg", depth_colormap)
-                    print(f"💾 Saved: {timestamp}")
+                    print(f"\n[SAVE] 💾 Saved: {timestamp}")
                 elif key == ord('c'):
                     if not self.calibrating:
                         self.calibrating = True
                         self.calibration_count = 0
                         self.calibration_scores = []
-                        print("\n🔄 Starting calibration...")
+                        print("\n[CALIBRATION] 🔄 Starting calibration...")
                     else:
                         self.calibrating = False
+                        print("\n[CALIBRATION] ❌ Calibration cancelled")
                         if len(self.calibration_scores) > 0:
                             self.calibrate_quantile()
                 elif key == ord('u'):
                     show_uncertainty = not show_uncertainty
+                    print(f"\n[DISPLAY] Uncertainty visualization: {'ON' if show_uncertainty else 'OFF'}")
         
         finally:
             cv2.destroyAllWindows()
             self.pipeline.stop()
+            print("\n[EXIT] ✅ Cleanup complete")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="YOLOv8 with Conformal Prediction")
+    parser = argparse.ArgumentParser(description="YOLOv8 with Conformal Prediction (Debug Mode)")
     parser.add_argument("--model", type=str, default="yolov8m.pt",
                        help="YOLOv8 model variant (n/s/m/l/x)")
     parser.add_argument("--alpha", type=float, default=0.1,
@@ -470,8 +513,8 @@ if __name__ == "__main__":
     
     print("🎯 Intel RealSense D455 - YOLOv8 with Conformal Prediction")
     print("=" * 60)
-    print("This demo shows object detection with uncertainty quantification")
-    print("using conformal prediction to provide coverage guarantees")
+    print("DEBUG MODE: Extensive logging enabled")
+    print("SYMMETRIC UNCERTAINTY BOXES")
     print("=" * 60)
     
     detector = YOLOConformalDetector(args.model, args.alpha)
